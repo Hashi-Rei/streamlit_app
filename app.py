@@ -34,13 +34,13 @@ df_line = df_base[df_base['年齢5歳階級'] == '総数'].sort_values('西暦�
 # 棒グラフ・表・保存用（ユーザーがサイドバーで選んだ「年齢」に絞り込む）
 df_display = df_base[df_base['年齢5歳階級'].isin(Nenrei)]
 
+
 st.header('抽出結果')
-# 選択した条件を視覚化
+# 選択した条件を視覚化/青枠/**で大文字
 Prefs_text = ",".join(Prefs) if Prefs else '未選択'
 Gengou_text = ",".join(Gengou) if Gengou else '未選択'
-
-# 青枠で見やすく/** ** で大文字
 st.info(f"**現在の検索条件**\n- **都道府県:** {Prefs_text}\n- **元号:** {Gengou_text}\n- **期間:** {year[0]}年～{year[1]}年")
+
 
 if Prefs:
     # 未使用UI部品①:st.toast(抽出の通知)
@@ -52,14 +52,13 @@ if Prefs:
         st.line_chart(df_line, x='西暦（年）', y='人口（総数）', color='都道府県名')
         st.caption("※都道府県ごとの人口の増減傾向を比較できます。")
     else:   # エラー通知（総数を入れないとグラフが表示できない）
-        st.warning("表示するデータがありません。サイドバーで都道府県・元号・年齢を選んでください。",)
-        st.warning("※年齢のセレクトボックスに【総数】を追加してください。")
+        st.warning("表示するデータがありません。サイドバーで都道府県を選んでください。",)
+
 
     # 棒グラフ
     st.subheader('年齢階級別の人口比較')
     if not df_display.empty:
-    # 最新の1年分だけ抜き出す。
-    # これをしないと、選択した全年代が足し算されて巨大な分かりづらい棒になってしまう。
+    # 最新の1年分だけ抜き出す。(これをしないと、選択した全年代が足し算されて巨大な分かりづらい棒になってしまう。)
         latest_year = df_display['西暦（年）'].max()
         df_bar = df_display[df_display['西暦（年）'] == latest_year]
         # 総数をぬいて、純粋な年齢層だけを並べる。
@@ -72,7 +71,7 @@ if Prefs:
         else:
             st.warning("年齢層を選択してください。")
 
-    # 未使用部品③：st.download_button (ダウンロード)
+    # 未使用部品②：st.download_button (ダウンロード)
     csv = df_display.to_csv(index=False).encode('utf_8_sig')
     st.download_button(
         label="CSV形式で保存",
